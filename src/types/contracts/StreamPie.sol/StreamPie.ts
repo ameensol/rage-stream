@@ -28,21 +28,21 @@ import type {
   utils,
 } from "ethers";
 
-export interface MetaSablierInterface extends utils.Interface {
+export interface StreamPieInterface extends utils.Interface {
   functions: {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "cancelForkStream(uint256)": FunctionFragment;
-    "cancelStream()": FunctionFragment;
-    "createStream(address,uint256,address,uint256,uint256)": FunctionFragment;
+    "cancelStreamPie()": FunctionFragment;
+    "createStreamPie(address,uint256,address,uint256,uint256)": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "forks(uint256)": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
-    "metaStreamId()": FunctionFragment;
     "owner()": FunctionFragment;
     "rageStream(address,uint256)": FunctionFragment;
     "sablier()": FunctionFragment;
+    "streamPieId()": FunctionFragment;
     "token()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
@@ -56,15 +56,15 @@ export interface MetaSablierInterface extends utils.Interface {
       | "approve"
       | "balanceOf"
       | "cancelForkStream"
-      | "cancelStream"
-      | "createStream"
+      | "cancelStreamPie"
+      | "createStreamPie"
       | "decreaseAllowance"
       | "forks"
       | "increaseAllowance"
-      | "metaStreamId"
       | "owner"
       | "rageStream"
       | "sablier"
+      | "streamPieId"
       | "token"
       | "totalSupply"
       | "transfer"
@@ -86,11 +86,11 @@ export interface MetaSablierInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "cancelStream",
+    functionFragment: "cancelStreamPie",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "createStream",
+    functionFragment: "createStreamPie",
     values: [string, BigNumberish, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
@@ -102,16 +102,16 @@ export interface MetaSablierInterface extends utils.Interface {
     functionFragment: "increaseAllowance",
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "metaStreamId",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "rageStream",
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "sablier", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "streamPieId",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "token", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
@@ -138,11 +138,11 @@ export interface MetaSablierInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "cancelStream",
+    functionFragment: "cancelStreamPie",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "createStream",
+    functionFragment: "createStreamPie",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -154,13 +154,13 @@ export interface MetaSablierInterface extends utils.Interface {
     functionFragment: "increaseAllowance",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "metaStreamId",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "rageStream", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sablier", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "streamPieId",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
@@ -209,12 +209,12 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface MetaSablier extends BaseContract {
+export interface StreamPie extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: MetaSablierInterface;
+  interface: StreamPieInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -255,11 +255,11 @@ export interface MetaSablier extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    cancelStream(
+    cancelStreamPie(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    createStream(
+    createStreamPie(
       recipient: string,
       deposit: BigNumberish,
       _token: string,
@@ -282,8 +282,6 @@ export interface MetaSablier extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    metaStreamId(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     rageStream(
@@ -293,6 +291,8 @@ export interface MetaSablier extends BaseContract {
     ): Promise<ContractTransaction>;
 
     sablier(overrides?: CallOverrides): Promise<[string]>;
+
+    streamPieId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     token(overrides?: CallOverrides): Promise<[string]>;
 
@@ -335,11 +335,11 @@ export interface MetaSablier extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  cancelStream(
+  cancelStreamPie(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  createStream(
+  createStreamPie(
     recipient: string,
     deposit: BigNumberish,
     _token: string,
@@ -362,8 +362,6 @@ export interface MetaSablier extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  metaStreamId(overrides?: CallOverrides): Promise<BigNumber>;
-
   owner(overrides?: CallOverrides): Promise<string>;
 
   rageStream(
@@ -373,6 +371,8 @@ export interface MetaSablier extends BaseContract {
   ): Promise<ContractTransaction>;
 
   sablier(overrides?: CallOverrides): Promise<string>;
+
+  streamPieId(overrides?: CallOverrides): Promise<BigNumber>;
 
   token(overrides?: CallOverrides): Promise<string>;
 
@@ -415,9 +415,9 @@ export interface MetaSablier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    cancelStream(overrides?: CallOverrides): Promise<void>;
+    cancelStreamPie(overrides?: CallOverrides): Promise<void>;
 
-    createStream(
+    createStreamPie(
       recipient: string,
       deposit: BigNumberish,
       _token: string,
@@ -440,8 +440,6 @@ export interface MetaSablier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    metaStreamId(overrides?: CallOverrides): Promise<BigNumber>;
-
     owner(overrides?: CallOverrides): Promise<string>;
 
     rageStream(
@@ -451,6 +449,8 @@ export interface MetaSablier extends BaseContract {
     ): Promise<void>;
 
     sablier(overrides?: CallOverrides): Promise<string>;
+
+    streamPieId(overrides?: CallOverrides): Promise<BigNumber>;
 
     token(overrides?: CallOverrides): Promise<string>;
 
@@ -516,11 +516,11 @@ export interface MetaSablier extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    cancelStream(
+    cancelStreamPie(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    createStream(
+    createStreamPie(
       recipient: string,
       deposit: BigNumberish,
       _token: string,
@@ -543,8 +543,6 @@ export interface MetaSablier extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    metaStreamId(overrides?: CallOverrides): Promise<BigNumber>;
-
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     rageStream(
@@ -554,6 +552,8 @@ export interface MetaSablier extends BaseContract {
     ): Promise<BigNumber>;
 
     sablier(overrides?: CallOverrides): Promise<BigNumber>;
+
+    streamPieId(overrides?: CallOverrides): Promise<BigNumber>;
 
     token(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -600,11 +600,11 @@ export interface MetaSablier extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    cancelStream(
+    cancelStreamPie(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    createStream(
+    createStreamPie(
       recipient: string,
       deposit: BigNumberish,
       _token: string,
@@ -630,8 +630,6 @@ export interface MetaSablier extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    metaStreamId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     rageStream(
@@ -641,6 +639,8 @@ export interface MetaSablier extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     sablier(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    streamPieId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

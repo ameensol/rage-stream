@@ -33,10 +33,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ReentrancyGuard__factory>;
     getContractFactory(
-      name: "MetaSablier",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.MetaSablier__factory>;
-    getContractFactory(
       name: "ISablier",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ISablier__factory>;
@@ -44,6 +40,14 @@ declare module "hardhat/types/runtime" {
       name: "Sablier",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Sablier__factory>;
+    getContractFactory(
+      name: "SteamPie",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SteamPie__factory>;
+    getContractFactory(
+      name: "StreamPie",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.StreamPie__factory>;
     getContractFactory(
       name: "Imports",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -75,11 +79,6 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ReentrancyGuard>;
     getContractAt(
-      name: "MetaSablier",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.MetaSablier>;
-    getContractAt(
       name: "ISablier",
       address: string,
       signer?: ethers.Signer
@@ -89,6 +88,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Sablier>;
+    getContractAt(
+      name: "SteamPie",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SteamPie>;
+    getContractAt(
+      name: "StreamPie",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.StreamPie>;
     getContractAt(
       name: "Imports",
       address: string,

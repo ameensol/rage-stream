@@ -11,14 +11,14 @@ export function shouldBehaveLikeCreateStream(): void {
   const stopTime: BigNumber = startTime.add(TIME_DELTA);
 
   beforeEach(async function () {
-    await this.contracts.token.connect(this.signers.sender).approve(this.contracts.metaSablier.address, MaxUint256);
+    await this.contracts.token.connect(this.signers.sender).approve(this.contracts.streamPie.address, MaxUint256);
   });
 
-  context("when it is not the first time that the meta stream is created", function () {
+  context("when it is not the first time that the stream pie is created", function () {
     it("reverts", async function () {
-      await this.contracts.metaSablier
+      await this.contracts.streamPie
         .connect(this.signers.sender)
-        .createStream(
+        .createStreamPie(
           this.signers.recipient.address,
           STREAM_DEPOSIT,
           this.contracts.token.address,
@@ -26,20 +26,20 @@ export function shouldBehaveLikeCreateStream(): void {
           stopTime,
         );
       await expect(
-        this.contracts.metaSablier
+        this.contracts.streamPie
           .connect(this.signers.sender)
-          .createStream(
+          .createStreamPie(
             this.signers.recipient.address,
             STREAM_DEPOSIT,
             this.contracts.token.address,
             startTime,
             stopTime,
           ),
-      ).to.be.revertedWith("only one meta stream can be created");
+      ).to.be.revertedWith("only one stream pie can be created");
     });
   });
 
-  // context("when it is the first time that the meta stream is created", function() {
+  // context("when it is the first time that the stream pie is created", function() {
   // // TODO
   // });
 }

@@ -2,7 +2,7 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signe
 import type { Fixture } from "ethereum-waffle";
 
 import type { ERC20Mintable } from "../src/types/@openzeppelin/contracts/token/ERC20/ERC20Mintable";
-import type { MetaSablier } from "../src/types/contracts/MetaStream.sol";
+import type { StreamPie } from "../src/types/contracts/StreamPie.sol";
 import type { Sablier } from "../src/types/contracts/sablier/Sablier";
 
 declare module "mocha" {
@@ -14,7 +14,7 @@ declare module "mocha" {
 }
 
 export interface Contracts {
-  metaSablier: MetaSablier;
+  streamPie: StreamPie;
   sablier: Sablier;
   token: ERC20Mintable;
 }

@@ -3,11 +3,11 @@ import { artifacts, ethers, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
 import type { ERC20Mintable } from "../../src/types/@openzeppelin/contracts/token/ERC20/ERC20Mintable";
-import type { MetaSablier } from "../../src/types/contracts/MetaStream.sol";
+import type { StreamPie } from "../../src/types/contracts/StreamPie.sol";
 import type { Sablier } from "../../src/types/contracts/sablier/Sablier";
 import { STREAM_DEPOSIT } from "../shared/constants";
 import { Contracts, Signers } from "../types";
-import { shouldBehaveLikeMetaSablier } from "./MetaSablier.behavior";
+import { shouldBehaveLikeStreamPie } from "./StreamPie.behavior";
 
 describe("Unit tests", function () {
   before(async function () {
@@ -18,7 +18,7 @@ describe("Unit tests", function () {
     this.signers.recipient = signers[2];
   });
 
-  describe("MetaSablier", function () {
+  describe("StreamPie", function () {
     beforeEach(async function () {
       this.contracts = {} as Contracts;
 
@@ -35,16 +35,16 @@ describe("Unit tests", function () {
       const sablierArtifact: Artifact = await artifacts.readArtifact("Sablier");
       this.contracts.sablier = <Sablier>await waffle.deployContract(this.signers.deployer, sablierArtifact, []);
 
-      // Deploy the MetaSablier contract by making the "sender" the owner
-      const metaSablierArtifact: Artifact = await artifacts.readArtifact("MetaSablier");
-      this.contracts.metaSablier = <MetaSablier>(
-        await waffle.deployContract(this.signers.deployer, metaSablierArtifact, [
+      // Deploy the StreamPie contract by making the "sender" the owner
+      const streamPieArtifact: Artifact = await artifacts.readArtifact("StreamPie");
+      this.contracts.streamPie = <StreamPie>(
+        await waffle.deployContract(this.signers.deployer, streamPieArtifact, [
           this.signers.sender.address,
           this.contracts.sablier.address,
         ])
       );
     });
 
-    shouldBehaveLikeMetaSablier();
+    shouldBehaveLikeStreamPie();
   });
 });

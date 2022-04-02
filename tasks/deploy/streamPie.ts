@@ -2,12 +2,12 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { task, types } from "hardhat/config";
 import { TaskArguments } from "hardhat/types";
 
-import { MetaSablier } from "../../src/types/contracts/MetaStream.sol/MetaSablier";
+import { StreamPie } from "../../src/types/contracts/StreamPie.sol/StreamPie";
 import { Sablier } from "../../src/types/contracts/sablier/Sablier";
-import { MetaSablier__factory } from "../../src/types/factories/contracts/MetaStream.sol/MetaSablier__factory";
+import { StreamPie__factory } from "../../src/types/factories/contracts/StreamPie.sol/StreamPie__factory";
 import { Sablier__factory } from "../../src/types/factories/contracts/sablier/Sablier__factory";
 
-task("deploy:MetaSablier")
+task("deploy:StreamPie")
   .addParam("development", "Whether to deploy the Sablier contract", false, types.boolean)
   .addParam("sablier", "Address of Sablier contract", false, types.string)
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
@@ -25,10 +25,10 @@ task("deploy:MetaSablier")
     }
 
     const signers: SignerWithAddress[] = await ethers.getSigners();
-    const metaSablierFactory: MetaSablier__factory = <MetaSablier__factory>(
-      await ethers.getContractFactory("MetaSablier")
+    const streamPieFactory: StreamPie__factory = <StreamPie__factory>(
+      await ethers.getContractFactory("StreamPie")
     );
-    const metaSablier: MetaSablier = <MetaSablier>await metaSablierFactory.deploy(signers[0].address, sablierAddress);
-    await metaSablier.deployed();
-    console.log("MetaSablier deployed to: ", metaSablier.address);
+    const streamPie: StreamPie = <StreamPie>await streamPieFactory.deploy(signers[0].address, sablierAddress);
+    await streamPie.deployed();
+    console.log("StreamPie deployed to: ", streamPie.address);
   });

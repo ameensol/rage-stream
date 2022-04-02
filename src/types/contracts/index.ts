@@ -3,11 +3,11 @@
 /* tslint:disable */
 
 /* eslint-disable */
-import type * as metaStreamSol from "./MetaStream.sol";
+import type * as streamPieSol from "./StreamPie.sol";
 import type * as sablier from "./sablier";
 import type * as test from "./test";
 
-export type { metaStreamSol };
+export type { streamPieSol };
 
 export type { sablier };
 

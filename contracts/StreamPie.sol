@@ -8,17 +8,17 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "./sablier/ISablier.sol";
 
 /**
- * @title MetaSablier
+ * @title StreamPie
  * @author Ameen Soleimani
- * @notice Meta money streaming.
+ * @notice Money Streaming With Friends!
  */
 
-contract MetaSablier is ERC20 {
+contract StreamPie is ERC20 {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
     ISablier public sablier;
-    uint256 public metaStreamId;
+    uint256 public streamPieId;
     address public owner;
     IERC20 public token;
     uint256[] public forks;
@@ -29,29 +29,29 @@ contract MetaSablier is ERC20 {
         _mint(msg.sender, 1000000);
     }
 
-    function createStream(
+    function createStreamPie(
         address recipient,
         uint256 deposit,
         IERC20 _token,
         uint256 startTime,
         uint256 stopTime
     ) external {
-        require(metaStreamId == 0, "only one meta stream can be created");
+        require(streamPieId == 0, "only one stream pie can be created");
         token = _token;
 
         _token.safeTransferFrom(owner, address(this), deposit);
         _token.approve(address(sablier), uint256(-1));
-        metaStreamId = sablier.createStream(recipient, deposit, address(_token), startTime, stopTime);
+        streamPieId = sablier.createStream(recipient, deposit, address(_token), startTime, stopTime);
     }
 
-    function cancelStream() public {
-        require(msg.sender == owner, "only owner is allowed to cancel metastream");
-        sablier.cancelStream(metaStreamId);
+    function cancelStreamPie() public {
+        require(msg.sender == owner, "only owner is allowed to cancel stream pie");
+        sablier.cancelStream(streamPieId);
         withdrawTokens();
     }
 
     function cancelForkStream(uint256 forkStreamIndex) public {
-        require(msg.sender == owner, "only owner is allowed to cancel metastream");
+        require(msg.sender == owner, "only owner is allowed to cancel a fork stream");
         uint256 forkStreamId = forks[forkStreamIndex];
         sablier.cancelStream(forkStreamId);
         withdrawTokens();
@@ -66,39 +66,39 @@ contract MetaSablier is ERC20 {
         require(balanceOf(msg.sender) >= tokensToBurn, "not enough tokens to burn");
         this.transferFrom(msg.sender, address(this), tokensToBurn);
 
-        (, address metaRecipient, , , uint256 metaStartTime, uint256 metaStopTime, , ) = sablier.getStream(
-            metaStreamId
+        (, address streamPieRecipient, , , uint256 streamPieStartTime, uint256 streamPieStopTime, , ) = sablier.getStream(
+            streamPieId
         );
-        sablier.cancelStream(metaStreamId);
+        sablier.cancelStream(streamPieId);
         uint256 balance = token.balanceOf(address(this));
         token.approve(address(sablier), balance);
 
         // calculate the fork deposit amount
-        uint256 metaDuration = metaStopTime.sub(metaStartTime);
+        uint256 streamPieDuration = streamPieStopTime.sub(streamPieStartTime);
 
         uint256 forkDeposit = tokensToBurn.mul(balance).div(this.totalSupply());
-        uint256 forkDepositAdjusted = forkDeposit.sub(forkDeposit.mod(metaDuration));
+        uint256 forkDepositAdjusted = forkDeposit.sub(forkDeposit.mod(streamPieDuration));
 
-        uint256 metaDeposit = balance.sub(forkDepositAdjusted);
-        uint256 metaDepositAdjusted = metaDeposit.sub(metaDeposit.mod(metaDuration));
+        uint256 streamPieDeposit = balance.sub(forkDepositAdjusted);
+        uint256 streamPieDepositAdjusted = streamPieDeposit.sub(streamPieDeposit.mod(streamPieDuration));
 
         // create a forked stream
         uint256 forkStreamId = sablier.createStream(
             newRecipient,
             forkDepositAdjusted,
             address(token),
-            metaStartTime,
-            metaStartTime
+            streamPieStartTime,
+            streamPieStartTime
         );
         forks.push(forkStreamId);
 
-        // re-create the main meta stream
-        metaStreamId = sablier.createStream(
-            metaRecipient,
-            metaDepositAdjusted,
+        // re-create the main stream pie
+        streamPieId = sablier.createStream(
+            streamPieRecipient,
+            streamPieDepositAdjusted,
             address(token),
-            metaStartTime,
-            metaStopTime
+            streamPieStartTime,
+            streamPieStopTime
         );
     }
 }
