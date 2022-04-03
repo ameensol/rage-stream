@@ -7,8 +7,6 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 
 import "./sablier/ISablier.sol";
 
-import "hardhat/console.sol";
-
 /**
  * @title StreamPie
  * @author Ameen Soleimani
