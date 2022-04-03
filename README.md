@@ -32,6 +32,8 @@ Instead, the StreamPie is a tokenized Sablier stream that allows token holders t
 
 ### Gotchas
 
+If someone calls ragestream after vesting has already started, they don't receive their pro-rata share of the already vested tokens, they only receive their pro-rata share of the remaining token deposit. So if someone calls ragestream with 10% of the StreamPie tokens, but they do so after 50% of the reward tokens have already vested, their fork stream will receive 10% of the remaining 50% (5% of the total) which will continue vesting at the same rate. The already vested tokens will be transferred to the original recipient of the StreamPie. 
+
 The Sablier contract is unfriendly to tokens that have few decimals. To avoid losing money as dust, please only use Sablier & StreamPie to stream tokens with at least 9 decimals. For this reason we also hardcoded the StreamPie tokens to have a total supply of 1M tokens, which allows reasonable granularity for ragestreams.
 
 If the recipient cancels the Sablier stream directly using the Sablier contract, the remaining unvested tokens will be transferred to the StreamPie contract. Anyone can call `withdrawTokens` at that point to withdraw the balance of the StreamPie contract to the owner.
