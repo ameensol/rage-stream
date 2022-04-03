@@ -101,13 +101,15 @@ contract StreamPie is ERC20Burnable {
         );
         forks.push(forkStreamId);
 
-        // re-create the main stream pie
-        streamPieId = sablier.createStream(
-            streamPieRecipient,
-            streamPieDepositAdjusted,
-            address(token),
-            streamPieStartTime,
-            streamPieStopTime
-        );
+        // only recreate main streampie if deposit > 0, otherwise leave streamId as the latest
+        if (streamPieDepositAdjusted > 0) {
+            streamPieId = sablier.createStream(
+                streamPieRecipient,
+                streamPieDepositAdjusted,
+                address(token),
+                streamPieStartTime,
+                streamPieStopTime
+            );
+        }
     }
 }

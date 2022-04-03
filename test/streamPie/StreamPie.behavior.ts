@@ -30,6 +30,5 @@ export function shouldBehaveLikeStreamPie(): void {
     describe("rageStream", function () {
       shouldBehaveLikeRageStream();
     });
-
   });
 }

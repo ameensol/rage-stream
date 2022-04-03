@@ -62,6 +62,105 @@ export function shouldBehaveLikeRageStream(): void {
       expect(forkStreamObject.stopTime).equal(stopTime);
       expect(forkStreamObject.remainingBalance).equal(STREAM_DEPOSIT.mul(tokensToBurn).div(totalStreamPieTokens));
     })
+
+    it.only('ragestream burns 100% of remaining shares - skips recreating streampie', async function() {
+      const streamId = this.streamId
+
+      // use deployer as recipient for ragestream (deployer has 100% of initial streamPie tokens)
+      await this.contracts.streamPie.connect(this.signers.deployer).approve(this.contracts.streamPie.address, totalStreamPieTokens)
+      await this.contracts.streamPie.connect(this.signers.deployer).rageStream(this.signers.deployer.address, totalStreamPieTokens)
+
+      const forkStreamId = await this.contracts.streamPie.forks(0)
+      const newStreamId = await this.contracts.streamPie.streamPieId()
+
+      expect(forkStreamId).eq(streamId.add(1))
+      expect(newStreamId).eq(streamId)
+
+      // verify new main stream - DNE
+      await expect(this.contracts.sablier.getStream(newStreamId)).to.be.revertedWith("stream does not exist")
+
+      // verify fork stream
+      const forkStreamObject = await this.contracts.sablier.getStream(forkStreamId);
+      expect(forkStreamObject.sender).equal(this.contracts.streamPie.address); // streampie contract is sender
+      expect(forkStreamObject.recipient).equal(this.signers.deployer.address); // recipient is now deployer
+      expect(forkStreamObject.deposit).equal(STREAM_DEPOSIT); // 100% of deposit in fork stream
+      expect(forkStreamObject.tokenAddress).equal(this.contracts.token.address);
+      expect(forkStreamObject.startTime).equal(startTime);
+      expect(forkStreamObject.stopTime).equal(stopTime);
+      expect(forkStreamObject.remainingBalance).equal(STREAM_DEPOSIT); // 100% of deposit 
+    })
+
+    it.only('two subsequent ragestreams', async function() {
+      const streamId = this.streamId
+
+      // use deployer as recipient for ragestream (deployer has 100% of initial streamPie tokens)
+      await this.contracts.streamPie.connect(this.signers.deployer).approve(this.contracts.streamPie.address, MaxUint256)
+      await this.contracts.streamPie.connect(this.signers.deployer).rageStream(this.signers.deployer.address, tokensToBurn)
+      await this.contracts.streamPie.connect(this.signers.deployer).rageStream(this.signers.sender.address, tokensToBurn)
+
+      const forkStreamId_1 = await this.contracts.streamPie.forks(0)
+      const forkStreamId_2 = await this.contracts.streamPie.forks(1)
+      const newStreamId = await this.contracts.streamPie.streamPieId()
+
+      expect(forkStreamId_1).eq(streamId.add(1))
+      expect(forkStreamId_2).eq(streamId.add(3))
+      expect(newStreamId).eq(streamId.add(2))
+
+      // verify new main stream - DNE
+      await expect(this.contracts.sablier.getStream(newStreamId)).to.be.revertedWith("stream does not exist")
+
+      // verify fork stream #1
+      const forkStreamObject_1 = await this.contracts.sablier.getStream(forkStreamId_1);
+      expect(forkStreamObject_1.sender).equal(this.contracts.streamPie.address); // streampie contract is sender
+      expect(forkStreamObject_1.recipient).equal(this.signers.deployer.address); // recipient is now deployer
+      expect(forkStreamObject_1.deposit).equal(STREAM_DEPOSIT.mul(tokensToBurn).div(totalStreamPieTokens));
+      expect(forkStreamObject_1.tokenAddress).equal(this.contracts.token.address);
+      expect(forkStreamObject_1.startTime).equal(startTime);
+      expect(forkStreamObject_1.stopTime).equal(stopTime);
+      expect(forkStreamObject_1.remainingBalance).equal(STREAM_DEPOSIT.mul(tokensToBurn).div(totalStreamPieTokens));
+
+      // verify fork stream #2
+      const forkStreamObject_2 = await this.contracts.sablier.getStream(forkStreamId_2);
+      expect(forkStreamObject_2.sender).equal(this.contracts.streamPie.address); // streampie contract is sender
+      expect(forkStreamObject_2.recipient).equal(this.signers.sender.address); // sender is now recipient 
+      expect(forkStreamObject_2.deposit).equal(STREAM_DEPOSIT.mul(tokensToBurn).div(totalStreamPieTokens));
+      expect(forkStreamObject_2.tokenAddress).equal(this.contracts.token.address);
+      expect(forkStreamObject_2.startTime).equal(startTime);
+      expect(forkStreamObject_2.stopTime).equal(stopTime);
+      expect(forkStreamObject_2.remainingBalance).equal(STREAM_DEPOSIT.mul(tokensToBurn).div(totalStreamPieTokens));
+    })
+
+    it('fails if sender didnt approve', async function() {
+      const streamId = this.streamId
+
+      // use deployer as recipient for ragestream (deployer has 100% of initial streamPie tokens)
+      // await this.contracts.streamPie.connect(this.signers.deployer).approve(this.contracts.streamPie.address, tokensToBurn)
+      await expect(this.contracts.streamPie
+        .connect(this.signers.deployer)
+        .rageStream(this.signers.deployer.address, tokensToBurn)
+      ).to.be.revertedWith('SafeMath: subtraction overflow')
+    })
+
+    it('fails if sender doesnt have tokens', async function() {
+      const streamId = this.streamId
+
+      await this.contracts.streamPie.connect(this.signers.deployer).approve(this.contracts.streamPie.address, tokensToBurn)
+      // transfer 690k to recipient so we have approved enough but our balance is too low
+      await this.contracts.streamPie.connect(this.signers.deployer).transfer(this.signers.recipient.address, 690000)
+      await expect(this.contracts.streamPie
+        .connect(this.signers.deployer)
+        .rageStream(this.signers.deployer.address, tokensToBurn)
+      ).to.be.revertedWith('not enough tokens to burn')
+    })
+
+    it('fails if sender burns 0 tokens', async function() {
+      // use deployer as recipient for ragestream (deployer has 100% of initial streamPie tokens)
+      await this.contracts.streamPie.connect(this.signers.deployer).approve(this.contracts.streamPie.address, tokensToBurn)
+      await expect(this.contracts.streamPie
+        .connect(this.signers.deployer)
+        .rageStream(this.signers.deployer.address, 0) // burn 0 tokens
+      ).to.be.revertedWith("deposit is zero")
+    })
   })
 
   context("with the streampie started but not yet finished", function () {
@@ -140,10 +239,7 @@ export function shouldBehaveLikeRageStream(): void {
       await revert(snapshotId)
     })
 
-    it('reverts bc new streampie deposit is 0', async function() {
-      const streamId = this.streamId
-
-      // use deployer as recipient for ragestream (deployer has 100% of initial streamPie tokens)
+    it('attempting to ragestream fails', async function() {
       await this.contracts.streamPie.connect(this.signers.deployer).approve(this.contracts.streamPie.address, tokensToBurn)
       await expect(this.contracts.streamPie
         .connect(this.signers.deployer)
