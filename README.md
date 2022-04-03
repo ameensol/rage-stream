@@ -36,6 +36,10 @@ The Sablier contract is unfriendly to tokens that have few decimals. To avoid lo
 
 If the recipient cancels the Sablier stream directly using the Sablier contract, the remaining unvested tokens will be transferred to the StreamPie contract. Anyone can call `withdrawTokens` at that point to withdraw the balance of the StreamPie contract to the owner.
 
+Each StreamPie contract can be used for exactly one tokenized sablier stream (the `createStreamPie` function can only be called once). 
+
+In theory you could ragestream a StreamPie into another StreamPie... but I didn't need that for my use case and am leaving it up you, anon.
+
 ### Dev Notes
 
 Rage stream functionality added to [Sablier](https://github.com/sablierhq/sablier).
