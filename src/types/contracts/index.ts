@@ -3,12 +3,10 @@
 /* tslint:disable */
 
 /* eslint-disable */
-import type * as streamPieSol from "./StreamPie.sol";
 import type * as sablier from "./sablier";
 import type * as test from "./test";
-
-export type { streamPieSol };
 
 export type { sablier };
 
 export type { test };
+export type { StreamPie } from "./StreamPie";

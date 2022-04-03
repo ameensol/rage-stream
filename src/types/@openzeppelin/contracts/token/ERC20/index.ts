@@ -2,5 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { ERC20 } from "./ERC20";
+export type { ERC20Burnable } from "./ERC20Burnable";
 export type { ERC20Mintable } from "./ERC20Mintable";
 export type { IERC20 } from "./IERC20";

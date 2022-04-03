@@ -21,6 +21,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC20__factory>;
     getContractFactory(
+      name: "ERC20Burnable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC20Burnable__factory>;
+    getContractFactory(
       name: "ERC20Mintable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC20Mintable__factory>;
@@ -41,10 +45,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Sablier__factory>;
     getContractFactory(
-      name: "SteamPie",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SteamPie__factory>;
-    getContractFactory(
       name: "StreamPie",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.StreamPie__factory>;
@@ -63,6 +63,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ERC20>;
+    getContractAt(
+      name: "ERC20Burnable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20Burnable>;
     getContractAt(
       name: "ERC20Mintable",
       address: string,
@@ -88,11 +93,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Sablier>;
-    getContractAt(
-      name: "SteamPie",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.SteamPie>;
     getContractAt(
       name: "StreamPie",
       address: string,

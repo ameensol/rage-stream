@@ -3,7 +3,7 @@ import { artifacts, ethers, waffle } from "hardhat";
 import type { Artifact } from "hardhat/types";
 
 import type { ERC20Mintable } from "../../src/types/@openzeppelin/contracts/token/ERC20/ERC20Mintable";
-import type { StreamPie } from "../../src/types/contracts/StreamPie.sol";
+import type { StreamPie } from "../../src/types/contracts/StreamPie";
 import type { Sablier } from "../../src/types/contracts/sablier/Sablier";
 import { STREAM_DEPOSIT } from "../shared/constants";
 import { Contracts, Signers } from "../types";

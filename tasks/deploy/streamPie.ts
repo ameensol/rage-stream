@@ -2,9 +2,9 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { task, types } from "hardhat/config";
 import { TaskArguments } from "hardhat/types";
 
-import { StreamPie } from "../../src/types/contracts/StreamPie.sol/StreamPie";
+import { StreamPie } from "../../src/types/contracts/StreamPie";
 import { Sablier } from "../../src/types/contracts/sablier/Sablier";
-import { StreamPie__factory } from "../../src/types/factories/contracts/StreamPie.sol/StreamPie__factory";
+import { StreamPie__factory } from "../../src/types/factories/contracts/StreamPie__factory";
 import { Sablier__factory } from "../../src/types/factories/contracts/sablier/Sablier__factory";
 
 task("deploy:StreamPie")

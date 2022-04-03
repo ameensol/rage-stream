@@ -1,11 +1,13 @@
 pragma solidity =0.5.17;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
 import "./sablier/ISablier.sol";
+
+import "hardhat/console.sol";
 
 /**
  * @title StreamPie
@@ -13,7 +15,7 @@ import "./sablier/ISablier.sol";
  * @notice Money Streaming With Friends!
  */
 
-contract StreamPie is ERC20 {
+contract StreamPie is ERC20Burnable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -39,7 +41,7 @@ contract StreamPie is ERC20 {
         require(streamPieId == 0, "only one stream pie can be created");
         token = _token;
 
-        _token.safeTransferFrom(owner, address(this), deposit);
+        _token.safeTransferFrom(msg.sender, address(this), deposit);
         _token.approve(address(sablier), uint256(-1));
         streamPieId = sablier.createStream(recipient, deposit, address(_token), startTime, stopTime);
     }
@@ -73,6 +75,11 @@ contract StreamPie is ERC20 {
         uint256 balance = token.balanceOf(address(this));
         token.approve(address(sablier), balance);
 
+        require(streamPieStopTime > now, "streampie has ended");
+
+        // if start time has passed, start now
+        streamPieStartTime = streamPieStartTime > now ? streamPieStartTime : now;
+
         // calculate the fork deposit amount
         uint256 streamPieDuration = streamPieStopTime.sub(streamPieStartTime);
 
@@ -82,13 +89,15 @@ contract StreamPie is ERC20 {
         uint256 streamPieDeposit = balance.sub(forkDepositAdjusted);
         uint256 streamPieDepositAdjusted = streamPieDeposit.sub(streamPieDeposit.mod(streamPieDuration));
 
+        this.burn(tokensToBurn);
+
         // create a forked stream
         uint256 forkStreamId = sablier.createStream(
             newRecipient,
             forkDepositAdjusted,
             address(token),
             streamPieStartTime,
-            streamPieStartTime
+            streamPieStopTime
         );
         forks.push(forkStreamId);
 
